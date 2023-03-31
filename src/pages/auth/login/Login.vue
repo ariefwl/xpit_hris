@@ -19,7 +19,7 @@
     />
 
     <div class="auth-layout__options d-flex align-center justify-space-between">
-      <va-checkbox v-model="keepLoggedIn" class="mb-0" :label="t('auth.keep_logged_in')" />
+      <!-- <va-checkbox v-model="keepLoggedIn" class="mb-0" :label="t('auth.keep_logged_in')" /> -->
       <router-link class="ml-1 va-link" :to="{ name: 'recover-password' }">{{
         t('auth.recover_password')
       }}</router-link>
@@ -35,23 +35,42 @@
   import { computed, ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
+  import { authStore } from '../../../stores/global-store'
+  import axios from 'axios'
   const { t } = useI18n()
 
+  const router = useRouter()
+  const useAuth = authStore()
   const email = ref('')
   const password = ref('')
-  const keepLoggedIn = ref(false)
+  // const keepLoggedIn = ref(false)
   const emailErrors = ref<string[]>([])
   const passwordErrors = ref<string[]>([])
-  const router = useRouter()
 
-  const formReady = computed(() => !emailErrors.value.length && !passwordErrors.value.length)
+  // const getToken = async () => {
+  //   await axios.get('/sanctum/csrf-cookie')
+  // }
 
-  function onsubmit() {
+  const formReady = computed(() => !emailErrors.value.length || !passwordErrors.value.length)
+
+  const onsubmit = async () => {
     if (!formReady.value) return
 
     emailErrors.value = email.value ? [] : ['Email is required']
     passwordErrors.value = password.value ? [] : ['Password is required']
 
-    router.push({ name: 'dashboard' })
+    await useAuth.getToken()
+    await axios
+      .post('/login', {
+        email: email.value,
+        password: password.value,
+      })
+      .then((response) => {
+        console.log(response.data.data)
+        router.push({ name: 'dashboard' })
+      })
+      .catch((err) => {
+        console.log(err.response.data.data)
+      })
   }
 </script>

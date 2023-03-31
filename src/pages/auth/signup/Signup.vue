@@ -1,6 +1,15 @@
 <template>
   <form @submit.prevent="onsubmit()">
     <va-input
+      v-model="name"
+      class="mb-3"
+      type="text"
+      :label="t('auth.name')"
+      :error="!!nameErrors.length"
+      :error-messages="nameErrors"
+    />
+
+    <va-input
       v-model="email"
       class="mb-3"
       type="email"
@@ -47,26 +56,48 @@
   import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
+  import axios from 'axios'
   const { t } = useI18n()
 
+  const router = useRouter()
   const email = ref('')
   const password = ref('')
+  const name = ref('')
   const agreedToTerms = ref(false)
+  const nameErrors = ref<string[]>([])
   const emailErrors = ref<string[]>([])
   const passwordErrors = ref<string[]>([])
   const agreedToTermsErrors = ref<string[]>([])
 
   const formReady = computed(() => {
-    return !(emailErrors.value.length || passwordErrors.value.length || agreedToTermsErrors.value.length)
+    return !(
+      nameErrors.value.length ||
+      emailErrors.value.length ||
+      passwordErrors.value.length ||
+      agreedToTermsErrors.value.length
+    )
   })
 
-  function onsubmit() {
+  const onsubmit = async () => {
     if (!formReady.value) return
 
+    nameErrors.value = name.value ? [] : ['Name is required']
     emailErrors.value = email.value ? [] : ['Email is required']
     passwordErrors.value = password.value ? [] : ['Password is required']
     agreedToTermsErrors.value = agreedToTerms.value ? [] : ['You must agree to the terms of use to continue']
 
-    useRouter().push({ name: 'dashboard' })
+    await axios
+      .post('/register', {
+        name: name.value,
+        email: email.value,
+        password: password.value,
+      })
+      .then((response) => {
+        console.log(response.data.data)
+        router.push({ name: 'dashboard' })
+      })
+      .catch((err) => {
+        console.log(err.response.data.data)
+      })
   }
 </script>

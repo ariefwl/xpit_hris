@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
+import axios from 'axios'
 
 export const useGlobalStore = defineStore('global', {
   state: () => {
     return {
       isSidebarMinimized: false,
-      userName: 'Vasili S',
+      userName: 'Arief Wicaksono',
     }
   },
 
@@ -18,3 +19,24 @@ export const useGlobalStore = defineStore('global', {
     },
   },
 })
+
+export const authStore = defineStore('auth', {
+  state: () => ({
+    authUser: null,
+  }),
+  getters: {
+    user: (state) => state.authUser,
+  },
+  actions: {
+    async getToken() {
+      await axios.get('/sanctum/csrf-cookie')
+    },
+
+    async getUser() {
+      const data = await axios.get('/api/user')
+      this.authUser = data.data
+    },
+  },
+})
+
+// export default authStore
