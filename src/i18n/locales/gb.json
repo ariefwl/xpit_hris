@@ -3,7 +3,8 @@
     "agree": "I agree to",
     "createAccount": "Create account",
     "createNewAccount": "Create New Account",
-    "name": "Name",
+    "fullname": "Fullname",
+    "username": "Username",
     "email": "Email",
     "login": "Login",
     "password": "Password",
@@ -292,6 +293,10 @@
     "persian": "Persian"
   },
   "menu": {
+    "masterData" : "Master Data",
+    "dataUser" : "User",
+    "dataEmployee" : "Employee",
+
     "auth": "Auth",
     "rating": "Rating",
     "buttons": "Buttons",

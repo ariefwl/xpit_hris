@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from 'vue'
+  import { computed, ref, onMounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { authStore } from '../../../stores/global-store'
@@ -52,14 +52,15 @@
   // }
 
   const formReady = computed(() => !emailErrors.value.length || !passwordErrors.value.length)
-
+  onMounted(async () => {
+    await useAuth.getToken()
+  })
   const onsubmit = async () => {
     if (!formReady.value) return
 
     emailErrors.value = email.value ? [] : ['Email is required']
     passwordErrors.value = password.value ? [] : ['Password is required']
 
-    await useAuth.getToken()
     await axios
       .post('/login', {
         email: email.value,

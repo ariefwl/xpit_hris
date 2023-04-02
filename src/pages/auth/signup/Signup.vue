@@ -1,10 +1,19 @@
 <template>
   <form @submit.prevent="onsubmit()">
     <va-input
+      v-model="username"
+      class="mb-3"
+      type="text"
+      :label="t('auth.username')"
+      :error="!!usernameErrors.length"
+      :error-messages="usernameErrors"
+    />
+
+    <va-input
       v-model="name"
       class="mb-3"
       type="text"
-      :label="t('auth.name')"
+      :label="t('auth.fullname')"
       :error="!!nameErrors.length"
       :error-messages="nameErrors"
     />
@@ -60,10 +69,12 @@
   const { t } = useI18n()
 
   const router = useRouter()
+  const username = ref('')
   const email = ref('')
   const password = ref('')
   const name = ref('')
   const agreedToTerms = ref(false)
+  const usernameErrors = ref<string[]>([])
   const nameErrors = ref<string[]>([])
   const emailErrors = ref<string[]>([])
   const passwordErrors = ref<string[]>([])
@@ -71,6 +82,7 @@
 
   const formReady = computed(() => {
     return !(
+      usernameErrors.value.length ||
       nameErrors.value.length ||
       emailErrors.value.length ||
       passwordErrors.value.length ||
@@ -81,6 +93,7 @@
   const onsubmit = async () => {
     if (!formReady.value) return
 
+    usernameErrors.value = username.value ? [] : ['Username is required']
     nameErrors.value = name.value ? [] : ['Name is required']
     emailErrors.value = email.value ? [] : ['Email is required']
     passwordErrors.value = password.value ? [] : ['Password is required']
@@ -88,13 +101,14 @@
 
     await axios
       .post('/register', {
+        username: username.value,
         name: name.value,
         email: email.value,
         password: password.value,
       })
       .then((response) => {
         console.log(response.data.data)
-        router.push({ name: 'dashboard' })
+        router.push({ name: 'login' })
       })
       .catch((err) => {
         console.log(err.response.data.data)

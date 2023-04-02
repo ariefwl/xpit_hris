@@ -36,6 +36,11 @@ export const authStore = defineStore('auth', {
       const data = await axios.get('/api/user')
       this.authUser = data.data
     },
+
+    async logOut() {
+      await axios.post('/logout')
+      this.authUser = null
+    },
   },
 })
 

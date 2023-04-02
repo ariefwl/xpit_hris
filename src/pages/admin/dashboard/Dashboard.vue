@@ -18,12 +18,14 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
+  import { authStore } from '../../../stores/global-store'
 
   import DashboardCharts from './DashboardCharts.vue'
   import DashboardInfoBlock from './DashboardInfoBlock.vue'
   import DashboardTabs from './DashboardTabs.vue'
   import DashboardMap from './DashboardMap.vue'
 
+  const useAuth = authStore()
   const dashboardMap = ref()
 
   function addAddressToMap({ city, country }: { city: { text: string }; country: string }) {
