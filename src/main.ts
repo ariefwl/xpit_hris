@@ -7,8 +7,14 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import '../axios'
 import stores from './stores'
 import router from './router'
+import PrimeVue from 'primevue/config'
 import vuesticGlobalConfig from './services/vuestic-ui/global-config'
 import App from './App.vue'
+
+//PrimeVue
+import 'primevue/resources/themes/lara-light-indigo/theme.css'
+import 'primevue/resources/primevue.min.css'
+import 'primeicons/primeicons.css'
 
 import 'datatables.net-bs5'
 // import 'datatables.net-bs5/css/dataTables.bootstrap5.min.css'
@@ -27,6 +33,7 @@ app.use(pinia)
 app.use(stores)
 app.use(router)
 app.use(i18n)
+app.use(PrimeVue)
 app.use(createVuestic({ config: vuesticGlobalConfig }))
 
 if (import.meta.env.VITE_APP_GTM_ENABLED) {

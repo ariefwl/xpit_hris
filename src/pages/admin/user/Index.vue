@@ -22,6 +22,12 @@
               </thead>
             </table>
           </div>
+
+          <DataTable :value="users" table-style="min-width: 50rem">
+            <Column field="id" header="Code"></Column>
+            <Column field="name" header="Name"></Column>
+            <Column field="email" header="E - Mail"></Column>
+          </DataTable>
         </va-card-content>
       </va-card>
 
@@ -34,12 +40,19 @@
   import axios from 'axios'
   import $ from 'jquery'
   import formEdit from './FormEdit.vue'
+  import DataTable from 'primevue/datatable'
+  import Column from 'primevue/column'
 
   export default {
+    components: {
+      DataTable,
+      Column,
+    },
     data() {
       return {
         modalEdit: false,
         formEdit,
+        users: null,
       }
     },
     mounted() {
@@ -51,6 +64,7 @@
           .get('http://127.0.0.1:8000/api/users')
           // .get('http://api101.lapaksemarang.com/api/users')
           .then((response) => {
+            this.users = response.data.data
             $('#tblUser').DataTable({
               data: response.data.data,
               responsive: true,
